@@ -1,0 +1,15 @@
+<!-- todo: write out the pokemon_data, then map the move data to individual buttons that send to move page -->
+<div class="pokemon-container">
+    <div class="pokemon-container-info">
+        <div class="pokemon-container-content">
+            <%= pokemon_data.name %>
+            <!-- <%=%> add pokemon img url -->
+        </div>
+        <form method="POST" action="/pokemon/:<%= value.id %>">
+            <button type="submit">read</button>
+        </form>
+    </div>
+    
+    
+</div>
+  
