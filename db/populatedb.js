@@ -1,5 +1,4 @@
 const pool = require("./pool");
-require("dotenv").config("../.env");
 
 const initTableSql = `
 CREATE TABLE IF NOT EXISTS pokemon_data (
