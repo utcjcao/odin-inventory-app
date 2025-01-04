@@ -4,30 +4,32 @@ const {
   postPokemonMove,
   getMoveExists,
   postMove,
+  getPokemonExists,
 } = require("../db/queries");
 
 class addController {
   constructor() {}
   addPokemonViewGet = async (req, res) => {
-    res.render("/add", {
-      moves: this.moves,
-    });
+    res.render("add");
   };
 
   addPokemonPost = async (req, res) => {
-    postPokemon(req.body.name, req.body.img, req.body.id);
-    for (let move of req.body.moves) {
-      // todo: separate req.body.moves into separate names
-      //   check if the move does not exist, and if so put a new move entry into the table
-      const moveExists = getMoveExists(move);
+    if (await getPokemonExists(req.body.name)) {
+      return; // if the pokemon name exists already dont do anything
+    }
+    await postPokemon(req.body.name, req.body.img);
+    // separate the moves by space
+    let moves = req.body.moves.split(" ");
+    for (let move of moves) {
+      const moveExists = await getMoveExists(move);
       if (!moveExists) {
-        postMove(move);
+        await postMove(move);
       }
       // add pokemon name, move to pokemon moves
-      postPokemonMove(req.body.name, move);
+      await postPokemonMove(req.body.name, move);
     }
     this.moves = [];
-    res.render("/add", { moves: this.moves });
+    res.render("index", {}); // go back home page
   };
 }
 

@@ -5,12 +5,12 @@ class indexController {
   constructor() {}
 
   getSearchPokemon = async (req, res) => {
-    const name = req.query.name;
+    const name = req.query.queryInput.toLowerCase();
     let results = [];
     if (name) {
-      results = await getSearchPokemon(name, message, this.id);
+      results = await getSearchPokemon(name);
     }
-    res.render("/", { results: results });
+    res.render("index", { results: results });
   };
 }
 

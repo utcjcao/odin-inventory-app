@@ -2,18 +2,13 @@ const pool = require("./pool");
 
 const initTableSql = `
 CREATE TABLE IF NOT EXISTS pokemon_data (
-  id INTEGER PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   name TEXT,
-  imgURL TEXT
+  img TEXT
 );
 CREATE TABLE IF NOT EXISTS move_data (
   id SERIAL PRIMARY KEY,
   name TEXT
-);
-CREATE TABLE IF NOT EXISTS pokemon_team (
-  id INTEGER PRIMARY KEY,
-  name TEXT,
-  imgURL TEXT
 );
 
 CREATE TABLE IF NOT EXISTS pokemon_moves (
@@ -24,9 +19,10 @@ CREATE TABLE IF NOT EXISTS pokemon_moves (
 `;
 
 const insertPokemonSql =
-  "INSERT INTO pokemon_data (id, name, imgURL) VALUES ($1, $2, $3);";
+  "INSERT INTO pokemon_data (name, img) VALUES ($1, $2);";
 const insertMoveSql = "INSERT INTO move_data (name) VALUES ($1)";
-const findMoveSql = "SELECT id FROM move_data WHERE name = $1;";
+const findMoveIdSql = "SELECT id FROM move_data WHERE name = $1;";
+const findPokemonIdSql = "SELECT id FROM pokemon_data WHERE name = $1;";
 const insertPokemonMoveSql =
   "INSERT INTO pokemon_moves (pokemon_id, move_id) VALUES ($1, $2);";
 
@@ -36,23 +32,23 @@ async function createTables() {
 
 async function populatePokemonEntries(pokemonData) {
   for (let pokemonId in pokemonData) {
-    const values = [
-      pokemonId,
-      pokemonData[pokemonId].name,
-      pokemonData[pokemonId].img,
-    ];
+    const values = [pokemonData[pokemonId].name, pokemonData[pokemonId].img];
     await pool.query(insertPokemonSql, values);
     for (let moveData of pokemonData[pokemonId].moves) {
-      let moveIdResult = await pool.query(findMoveSql, [moveData.move.name]); // check if move is already present
+      let moveIdResult = await pool.query(findMoveIdSql, [moveData.move.name]); // check if move is already present
       let moveId = moveIdResult.rows[0]?.id;
       if (!moveId) {
         await pool.query(insertMoveSql, [moveData.move.name]);
 
-        moveIdResult = await pool.query(findMoveSql, [moveData.move.name]);
+        moveIdResult = await pool.query(findMoveIdSql, [moveData.move.name]);
         moveId = moveIdResult.rows[0]?.id;
       }
-
-      await pool.query(insertPokemonMoveSql, [pokemonId, moveId]);
+      // find the pokemon sql id since its not the same at the pokemonId (bc SERIAL)
+      const sqlPokemonResult = await pool.query(findPokemonIdSql, [
+        pokemonData[pokemonId].name,
+      ]);
+      let sqlPokemonId = sqlPokemonResult.rows[0]?.id;
+      await pool.query(insertPokemonMoveSql, [sqlPokemonId, moveId]);
     }
   }
 }

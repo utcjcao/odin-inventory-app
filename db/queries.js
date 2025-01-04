@@ -22,31 +22,64 @@ async function getAllPokemon() {
 async function getPokemon(id) {
   const pokemonDataQuery = "SELECT * FROM pokemon_data WHERE id = $1;";
   const pokemonDataQueryValues = [id];
-  const { pokemon_data } = await pool.query(
+  const { rows: pokemonDataRows } = await pool.query(
     pokemonDataQuery,
     pokemonDataQueryValues
   );
 
-  const moveDataQuery = "SELECT * FROM pokemon_moves WHERE pokemon_id = $1;";
-  const moveDataQueryValues = [id];
-  const { move_data } = await pool.query(moveDataQuery, moveDataQueryValues);
+  const moveDataIdQuery = "SELECT * FROM pokemon_moves WHERE pokemon_id = $1;";
+  const moveDataIdQueryValues = [id];
+  const { rows: moveDataIdRows } = await pool.query(
+    moveDataIdQuery,
+    moveDataIdQueryValues
+  );
 
-  console.log(rows);
-  return { pokemon_data, move_data };
+  const moveDataQuery = "SELECT * FROM move_data WHERE id = $1;";
+
+  let move_data = [];
+  for (let moveDataRow of moveDataIdRows) {
+    const moveData = await pool.query(moveDataQuery, [moveDataRow.move_id]);
+
+    move_data.push(moveData.rows[0].name);
+  }
+
+  return {
+    pokemon_data: pokemonDataRows,
+    move_data: move_data,
+  };
 }
 
 async function getMove(id) {
   const moveDataQuery = "SELECT * FROM move_data WHERE id = $1;";
   const moveDataQueryValues = [id];
-  const { move_data } = await pool.query(moveDataQuery, moveDataQueryValues);
-
-  const pokemonDataQuery = "SELECT * FROM pokemon_moves WHERE move_id = $1;";
-  const pokemonDataQueryValues = [id];
-  const pokemon_data = await pool.query(
-    pokemonDataQuery,
-    pokemonDataQueryValues
+  const { rows: move_data_rows } = await pool.query(
+    moveDataQuery,
+    moveDataQueryValues
   );
-  return { move_data, pokemon_data };
+
+  const pokemonDataIdQuery = "SELECT * FROM pokemon_moves WHERE move_id = $1;";
+  const pokemonDataIdQueryValues = [id];
+  const { rows: pokemon_data_id_row } = await pool.query(
+    pokemonDataIdQuery,
+    pokemonDataIdQueryValues
+  );
+
+  const pokemonDataQuery = "SELECT * FROM pokemon_data WHERE id = $1;";
+
+  let pokemon_data = [];
+  for (let pokemon_data_row of pokemon_data_id_row) {
+    const pokemonData = await pool.query(pokemonDataQuery, [
+      pokemon_data_row.pokemon_id,
+    ]);
+
+    pokemon_data.push(pokemonData.rows[0]);
+  }
+  console.log(move_data_rows[0]);
+
+  return {
+    pokemon_data: pokemon_data,
+    move_data: move_data_rows[0],
+  };
 }
 
 async function getSearchPokemon(name) {
@@ -57,11 +90,11 @@ async function getSearchPokemon(name) {
   return rows;
 }
 
-async function postPokemon(name, img, id) {
-  await pool.query(
-    "INSERT INTO pokemon_data (name, img, id) VALUES ($1, $2, $3);",
-    [name, img, id]
-  );
+async function postPokemon(name, img) {
+  await pool.query("INSERT INTO pokemon_data (name, img) VALUES ($1, $2);", [
+    name,
+    img,
+  ]);
 }
 
 async function postMove(name) {
@@ -70,28 +103,61 @@ async function postMove(name) {
 
 async function getMoveExists(name) {
   const { rows } = await pool.query(
-    "SELECT * FROM move_data (name) VALUES ($1);",
+    "SELECT 1 FROM move_data WHERE name = $1 LIMIT 1;",
     [name]
   );
-  if (rows) {
-    return true;
-  } else {
-    return false;
-  }
+  return rows.length > 0;
 }
 
-async function postPokemonMove(pokemonName, moveName) {
-  const pokemonId = await pool.query(
-    "SELECT id from pokemon_data WHERE name = $1;",
-    [pokemonName]
+async function getPokemonExists(name) {
+  const { rows } = await pool.query(
+    "SELECT 1 FROM pokemon_data WHERE name = $1 LIMIT 1;",
+    [name]
   );
-  const moveId = await pool.query("SELECT id from move_data WHERE name = $1;", [
-    moveName,
-  ]);
+  return rows.length > 0;
+}
+
+// assuming that the pokemon and move already exist
+async function postPokemonMove(pokemonId, moveId) {
   await pool.query(
     "INSERT INTO pokemon_moves (pokemon_id, move_id) VALUES ($1, $2);",
     [pokemonId, moveId]
   );
+}
+
+// precond: assuming that newPokemonName and newPokemonImg are not empty (so use a required tag)
+async function updatePokemon(pokemonId, newPokemonName, newPokemonImg) {
+  await pool.query("UPDATE pokemon_data SET name = $1 WHERE id = $2;", [
+    newPokemonName,
+    pokemonId,
+  ]);
+  await pool.query("UPDATE pokemon_data SET img = $1 WHERE id = $2;", [
+    newPokemonImg,
+    pokemonId,
+  ]);
+}
+
+// precond: assuming that newMoveName is not empty (so use a required tag)
+async function updateMove(moveId, newMoveName) {
+  await pool.query("UPDATE name SET $1 from move_data WHERE id = $2;", [
+    newMoveName,
+    moveId,
+  ]);
+}
+
+async function deletePokemonMove(pokemonId, moveId) {
+  await pool.query(
+    "DELETE FROM pokemon_moves WHERE pokemon_id = $1 and move_id = $2;",
+    [pokemonId, moveId]
+  );
+}
+
+async function deletePokemon(id) {
+  await pool.query("DELETE FROM pokemon_data WHERE id = $1;", [id]);
+}
+
+async function deleteMove(id) {
+  await pool.query("DELETE FROM move_data WHERE id = $1;", [id]);
 }
 
 module.exports = {
@@ -99,8 +165,14 @@ module.exports = {
   getPokemon,
   getMove,
   getSearchPokemon,
+  getMoveExists,
+  getPokemonExists,
   postPokemon,
   postMove,
   postPokemonMove,
-  getMoveExists,
+  updatePokemon,
+  updateMove,
+  deletePokemon,
+  deleteMove,
+  deletePokemonMove,
 };

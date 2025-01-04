@@ -3,11 +3,19 @@
     <div class="pokemon-container-info">
         <div class="pokemon-container-content">
             <%= pokemon_data.name %>
-            <!-- <%=%> add pokemon img url -->
+            <img src="<%= pokemon_data.img %>" alt="<%= pokemon_data.name %> picture">
         </div>
-        <form method="POST" action="/pokemon/:<%= value.id %>">
-            <button type="submit">read</button>
-        </form>
+        <% if (move_data && move_data.length > 0) { %>
+            <h2>Moves:</h2>
+            <% move_data.map(move => { %>
+              <div class="result-card">
+                <h3><%= move %></h3>
+      
+              </div>
+            <% }); %>
+          <% } else { %>
+            <h2>No moves found</h2>
+          <% } %>
     </div>
     
     
