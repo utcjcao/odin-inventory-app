@@ -1,27 +1,30 @@
-<!-- todo: write out the pokemon_data, then map the move data to individual buttons that send to move page -->
 <div class="pokemon-container">
-    <div class="pokemon-container-info">
+    <% if (pokemon_data.length !== 0) { %> <!-- Check if pokemon_data has any data -->
+      <div class="pokemon-container-info">
         <div class="pokemon-container-content">
-            <%= pokemon_data.name %>
-            <img src="<%= pokemon_data.img %>" alt="<%= pokemon_data.name %> picture">
+          <%= pokemon_data[0].name %>
+          <img src="<%= pokemon_data[0].img %>" alt="<%= pokemon_data[0].name %> picture">
+          <form action="/pokemon/delete/<%= pokemon_data[0].id %>" method="POST">
+            <button type="submit"><h3>Delete Pokémon</h3></button>
+          </form>
         </div>
         <div class="move-container">
-            <% if (move_data && move_data.length > 0) { %>
-                <h2>Moves:</h2>
-                <% move_data.map(move => { %>
-                  <div class="move-card">
-                    <form action="/move/<%= move.id %>" method="GET">
-                        <button type="submit"><%= move.name %></button>
-                      </form>
-            
-                  </div>
-                <% }); %>
-              <% } else { %>
-                <h2>No moves found</h2>
-              <% } %>
+          <% if (move_data && move_data.length > 0) { %>
+            <h2>Moves:</h2>
+            <% move_data.map(move => { %>
+              <div class="move-card">
+                <form action="/move/<%= move.id %>" method="GET">
+                  <button type="submit"><%= move.name %></button>
+                </form>
+              </div>
+            <% }); %>
+          <% } else { %>
+            <h2>No moves found</h2>
+          <% } %>
         </div>
-    </div>
-    
-    
-</div>
+      </div>
+    <% } else { %> <!-- Render this if pokemon_data is empty -->
+      <h2>No Pokémon found</h2>
+    <% } %>
+  </div>
   

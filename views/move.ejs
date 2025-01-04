@@ -1,26 +1,32 @@
-<!-- todo: write out the move_data, then map the pokemon data to individual buttons that send to pokemon page -->
 <div class="move-container">
-    <div class="move-container-info">
+    <% if (move_data && Object.keys(move_data).length > 0) { %> <!-- Check if move_data is not empty -->
+      <div class="move-container-info">
         <div class="move-container-content">
-            <%= move_data.name %>
+          <%= move_data.name %>
+          <form action="/move/delete/<%= move_data.id %>" method="POST">
+            <button type="submit"><h3>Delete Move</h3></button>
+          </form>
         </div>
         <div class="pokemon-container">
-            <% if (pokemon_data && pokemon_data.length > 0) { %>
-                <h2>Pokemon:</h2>
-                <% pokemon_data.map(pokemon => { %>
-                  <div class="pokemon-card">
-                    <form action="/pokemon/<%= pokemon.id %>" method="GET">
-                        <button type="submit"><h3><%= pokemon.name %></h3>
-                            <img src="<%= pokemon.img %>" alt="<%= pokemon.name %> picture"></button>
-                      </form>
-                  </div>
-                <% }); %>
-              <% } else { %>
-                <h2>No moves found</h2>
-              <% } %>
+          <% if (pokemon_data && pokemon_data.length > 0) { %> <!-- Check if pokemon_data is not empty -->
+            <h2>Pokemon:</h2>
+            <% pokemon_data.map(pokemon => { %>
+              <div class="pokemon-card">
+                <form action="/pokemon/<%= pokemon.id %>" method="GET">
+                  <button type="submit">
+                    <h3><%= pokemon.name %></h3>
+                    <img src="<%= pokemon.img %>" alt="<%= pokemon.name %> picture">
+                  </button>
+                </form>
+              </div>
+            <% }); %>
+          <% } else { %>
+            <h2>No Pokémon found</h2>
+          <% } %>
         </div>
-    </div>
-    
-    
-</div>
+      </div>
+    <% } else { %> <!-- If move_data is empty, show this part -->
+      <h2>No moves found</h2>
+    <% } %>
+  </div>
   

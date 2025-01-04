@@ -32,7 +32,6 @@ class addController {
       const moveId = await getMoveId(move);
       // add pokemon name, move to pokemon moves
       await postPokemonMove(pokemonId, moveId);
-      console.log("hi");
     }
     this.moves = [];
     res.render("add", { message: "pokemon added" }); // go back home page

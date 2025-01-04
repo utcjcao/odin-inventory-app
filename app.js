@@ -1,5 +1,6 @@
 const path = require("path");
 const express = require("express");
+const methodOverride = require("method-override");
 
 const { pokemonRouter } = require("./routers/pokemonRouter");
 const { moveRouter } = require("./routers/moveRouter");
@@ -14,6 +15,8 @@ app.set("view engine", "ejs");
 const assetsPath = path.join(__dirname, "public");
 app.use(express.static(assetsPath));
 app.use(express.urlencoded({ extended: true }));
+
+app.use(methodOverride("_method"));
 
 app.use("/add", addRouter);
 app.use("/move", moveRouter);
