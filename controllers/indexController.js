@@ -5,9 +5,10 @@ class indexController {
   constructor() {}
 
   getSearchPokemon = async (req, res) => {
-    const name = req.query.queryInput.toLowerCase();
+    let name = req.query.query;
     let results = [];
     if (name) {
+      name = name.toLowerCase();
       results = await getSearchPokemon(name);
     }
     res.render("index", { results: results });

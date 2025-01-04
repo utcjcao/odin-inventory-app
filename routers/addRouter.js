@@ -11,6 +11,7 @@ addRouter.get("", async (req, res) => {
 });
 
 addRouter.post("", async (req, res) => {
+  console.log("post");
   await addPokemonPost(req, res);
 });
 

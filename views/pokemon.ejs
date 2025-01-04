@@ -5,17 +5,21 @@
             <%= pokemon_data.name %>
             <img src="<%= pokemon_data.img %>" alt="<%= pokemon_data.name %> picture">
         </div>
-        <% if (move_data && move_data.length > 0) { %>
-            <h2>Moves:</h2>
-            <% move_data.map(move => { %>
-              <div class="result-card">
-                <h3><%= move %></h3>
-      
-              </div>
-            <% }); %>
-          <% } else { %>
-            <h2>No moves found</h2>
-          <% } %>
+        <div class="move-container">
+            <% if (move_data && move_data.length > 0) { %>
+                <h2>Moves:</h2>
+                <% move_data.map(move => { %>
+                  <div class="move-card">
+                    <form action="/move/<%= move.id %>" method="GET">
+                        <button type="submit"><%= move.name %></button>
+                      </form>
+            
+                  </div>
+                <% }); %>
+              <% } else { %>
+                <h2>No moves found</h2>
+              <% } %>
+        </div>
     </div>
     
     

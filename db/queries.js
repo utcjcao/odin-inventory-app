@@ -40,7 +40,7 @@ async function getPokemon(id) {
   for (let moveDataRow of moveDataIdRows) {
     const moveData = await pool.query(moveDataQuery, [moveDataRow.move_id]);
 
-    move_data.push(moveData.rows[0].name);
+    move_data.push(moveData.rows[0]);
   }
 
   return {
@@ -117,6 +117,22 @@ async function getPokemonExists(name) {
   return rows.length > 0;
 }
 
+async function getPokemonId(name) {
+  const { rows } = await pool.query(
+    "SELECT * FROM pokemon_data WHERE name = $1;",
+    [name]
+  );
+  return rows[0].id;
+}
+
+async function getMoveId(name) {
+  const { rows } = await pool.query(
+    "SELECT * FROM move_data WHERE name = $1;",
+    [name]
+  );
+  return rows[0].id;
+}
+
 // assuming that the pokemon and move already exist
 async function postPokemonMove(pokemonId, moveId) {
   await pool.query(
@@ -167,6 +183,8 @@ module.exports = {
   getSearchPokemon,
   getMoveExists,
   getPokemonExists,
+  getPokemonId,
+  getMoveId,
   postPokemon,
   postMove,
   postPokemonMove,

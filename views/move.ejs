@@ -4,18 +4,21 @@
         <div class="move-container-content">
             <%= move_data.name %>
         </div>
-        <% if (pokemon_data && pokemon_data.length > 0) { %>
-            <h2>Pokemon:</h2>
-            <% pokemon_data.map(pokemon => { %>
-              <div class="result-card">
-                <h3><%= pokemon.name %></h3>
-                <img src="<%= pokemon.img %>" alt="<%= pokemon.name %> picture">
-      
-              </div>
-            <% }); %>
-          <% } else { %>
-            <h2>No moves found</h2>
-          <% } %>
+        <div class="pokemon-container">
+            <% if (pokemon_data && pokemon_data.length > 0) { %>
+                <h2>Pokemon:</h2>
+                <% pokemon_data.map(pokemon => { %>
+                  <div class="pokemon-card">
+                    <form action="/pokemon/<%= pokemon.id %>" method="GET">
+                        <button type="submit"><h3><%= pokemon.name %></h3>
+                            <img src="<%= pokemon.img %>" alt="<%= pokemon.name %> picture"></button>
+                      </form>
+                  </div>
+                <% }); %>
+              <% } else { %>
+                <h2>No moves found</h2>
+              <% } %>
+        </div>
     </div>
     
     
