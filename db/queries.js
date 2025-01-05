@@ -144,6 +144,7 @@ async function getMoveId(name) {
 
 // assuming that the pokemon and move already exist
 async function postPokemonMove(pokemonId, moveId) {
+  console.log(pokemonId, moveId);
   await pool.query(
     "INSERT INTO pokemon_moves (pokemon_id, move_id) VALUES ($1, $2) ON CONFLICT (pokemon_id, move_id) DO NOTHING;",
     [pokemonId, moveId]

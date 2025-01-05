@@ -52,7 +52,7 @@ button:hover {
 
 .result-card, .pokemon-card, .move-card {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-items: stretch;
     align-items: stretch;
     background-color: white;

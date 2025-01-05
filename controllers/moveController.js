@@ -1,4 +1,9 @@
-const { getMove, deleteMove, getSearchMove } = require("../db/queries");
+const {
+  getMove,
+  deleteMove,
+  getSearchMove,
+  getPokemonId,
+} = require("../db/queries");
 
 class moveController {
   constructor() {}
@@ -22,6 +27,39 @@ class moveController {
     }
     res.render("searchMove", { results: results });
   };
+
+  // from move page, verify pokemon and add
+  async moveToPokemonPost(req, res) {
+    const pokemonId = await getPokemonId(req.body.pokemon);
+    if (pokemonId === -1) {
+      const { pokemon_data, move_data } = await getMove(req.params.moveId);
+      res.render("move", {
+        message: "pokemon not found",
+        move_data,
+        pokemon_data,
+      });
+    } else {
+      await postPokemonMove(pokemonId, req.params.moveId);
+      const { pokemon_data, move_data } = await getMove(req.params.id);
+      console.log(pokemon_data);
+      res.render("move", {
+        message: "pokemon added",
+        pokemon_data: pokemon_data,
+        move_data: move_data,
+      });
+    }
+  }
+
+  async movePokemonDelete(req, res) {
+    await deletePokemonMove(req.params.pokemonId, req.params.moveId);
+    const { pokemon_data, move_data } = await getPokemon(req.params.pokemonId);
+    console.log(pokemon_data);
+    res.render("move", {
+      message: `pokemon deleted`,
+      pokemon_data: pokemon_data,
+      move_data: move_data,
+    });
+  }
 }
 
 module.exports = new moveController();

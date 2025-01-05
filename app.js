@@ -6,6 +6,7 @@ const { pokemonRouter } = require("./routers/pokemonRouter");
 const { moveRouter } = require("./routers/moveRouter");
 const { addRouter } = require("./routers/addRouter");
 const { indexRouter } = require("./routers/indexRouter");
+const { pokemonMoveRouter } = require("./routers/pokemonMoveRouter");
 
 const app = new express();
 
@@ -20,6 +21,8 @@ app.use(methodOverride("_method"));
 
 app.use("/add", addRouter);
 app.use("/move", moveRouter);
+app.use("/pokemonmove", pokemonMoveRouter);
+
 app.use("/pokemon", pokemonRouter);
 app.use("/", indexRouter);
 

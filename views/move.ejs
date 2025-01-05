@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Move Page</title>
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
@@ -17,6 +17,10 @@
             <div class="move-container-content">
                 <div class="container-header">
                     <h1><%= move_data.name %></h1>
+                    <form action="/pokemonmove/pokemonToMove/<%= move_data.id%>" method="POST">
+                      <input style="height: 45px;" type="text" name="pokemon" placeholder="enter new pokemon here...">
+                      <button type="submit"><h3>Add pokemon</h3></button>
+                    </form>
                     <form action="/move/delete/<%= move_data.id %>" method="POST">
                         <button type="submit"><h3>Delete Move</h3></button>
                     </form>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Pokemon Page</title>
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
@@ -16,7 +16,7 @@
             <div class="pokemon-container-content">
               <div class="container-header">
                   <h1><%= pokemon_data[0].name %></h1>
-                  <form action="/pokemon/<%= pokemon_data[0].id%>" method="POST">
+                  <form action="/pokemonmove/moveToPokemon/<%= pokemon_data[0].id%>" method="POST">
                     <input style="height: 45px;" type="text" name="move" placeholder="enter new move here...">
                     <button type="submit"><h3>Add Move</h3></button>
                   </form>
@@ -35,7 +35,11 @@
                     <form action="/move/<%= move.id %>" method="GET">
                       <button type="submit"><%= move.name %></button>
                     </form>
+                    <form action="/pokemonmove/delete/<%= pokemon_data[0].id %>/<%= move.id %>" method="POST">
+                      <button type="submit">x</button>
+                    </form>
                   </div>
+                  
                 <% }); %>
               <% } else { %>
                 <h2>No moves found</h2>
