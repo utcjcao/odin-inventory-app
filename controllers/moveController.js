@@ -1,4 +1,4 @@
-const { getMove, deleteMove } = require("../db/queries");
+const { getMove, deleteMove, getSearchMove } = require("../db/queries");
 
 class moveController {
   constructor() {}
@@ -12,6 +12,16 @@ class moveController {
     res.render("index", { results: [] });
     await deleteMove(req.params.id);
   }
+
+  getSearchMove = async (req, res) => {
+    let name = req.query.query;
+    let results = [];
+    if (name) {
+      name = name.toLowerCase();
+      results = await getSearchMove(name);
+    }
+    res.render("searchMove", { results: results });
+  };
 }
 
 module.exports = new moveController();

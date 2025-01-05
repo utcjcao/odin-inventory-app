@@ -42,7 +42,6 @@ async function getPokemon(id) {
 
     move_data.push(moveData.rows[0]);
   }
-
   return {
     pokemon_data: pokemonDataRows,
     move_data: move_data,
@@ -86,7 +85,13 @@ async function getSearchPokemon(name) {
   const query = "SELECT * FROM pokemon_data WHERE name like $1;";
   const values = [name + "%"];
   const { rows } = await pool.query(query, values);
-  console.log(rows);
+  return rows;
+}
+
+async function getSearchMove(name) {
+  const query = "SELECT * FROM move_data WHERE name like $1;";
+  const values = [name + "%"];
+  const { rows } = await pool.query(query, values);
   return rows;
 }
 
@@ -130,13 +135,17 @@ async function getMoveId(name) {
     "SELECT * FROM move_data WHERE name = $1;",
     [name]
   );
-  return rows[0].id;
+  if (rows.length > 0) {
+    return rows[0].id;
+  } else {
+    return -1;
+  }
 }
 
 // assuming that the pokemon and move already exist
 async function postPokemonMove(pokemonId, moveId) {
   await pool.query(
-    "INSERT INTO pokemon_moves (pokemon_id, move_id) VALUES ($1, $2);",
+    "INSERT INTO pokemon_moves (pokemon_id, move_id) VALUES ($1, $2) ON CONFLICT (pokemon_id, move_id) DO NOTHING;",
     [pokemonId, moveId]
   );
 }
@@ -181,6 +190,7 @@ module.exports = {
   getPokemon,
   getMove,
   getSearchPokemon,
+  getSearchMove,
   getMoveExists,
   getPokemonExists,
   getPokemonId,

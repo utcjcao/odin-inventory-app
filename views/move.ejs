@@ -1,32 +1,48 @@
-<div class="move-container">
-    <% if (move_data && Object.keys(move_data).length > 0) { %> <!-- Check if move_data is not empty -->
-      <div class="move-container-info">
-        <div class="move-container-content">
-          <%= move_data.name %>
-          <form action="/move/delete/<%= move_data.id %>" method="POST">
-            <button type="submit"><h3>Delete Move</h3></button>
-          </form>
-        </div>
-        <div class="pokemon-container">
-          <% if (pokemon_data && pokemon_data.length > 0) { %> <!-- Check if pokemon_data is not empty -->
-            <h2>Pokemon:</h2>
-            <% pokemon_data.map(pokemon => { %>
-              <div class="pokemon-card">
-                <form action="/pokemon/<%= pokemon.id %>" method="GET">
-                  <button type="submit">
-                    <h3><%= pokemon.name %></h3>
-                    <img src="<%= pokemon.img %>" alt="<%= pokemon.name %> picture">
-                  </button>
-                </form>
-              </div>
-            <% }); %>
-          <% } else { %>
-            <h2>No Pokémon found</h2>
-          <% } %>
-        </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <header>
+        <%- include('header', {}); %>
+    </header>
+    <div class="move-container">
+        
+        <% if (move_data && Object.keys(move_data).length > 0) { %> <!-- Check if move_data is not empty -->
+          <div class="move-container-info">
+            <div class="move-container-content">
+                <div class="container-header">
+                    <h1><%= move_data.name %></h1>
+                    <form action="/move/delete/<%= move_data.id %>" method="POST">
+                        <button type="submit"><h3>Delete Move</h3></button>
+                    </form>
+                </div>
+            </div>
+            <div class="pokemon-card-container">
+              <% if (pokemon_data && pokemon_data.length > 0) { %> <!-- Check if pokemon_data is not empty -->
+                <% pokemon_data.map(pokemon => { %>
+                  <div class="pokemon-card">
+                    <form action="/pokemon/<%= pokemon.id %>" method="GET">
+                      <button type="submit">
+                        <h3><%= pokemon.name %></h3>
+                        <img src="<%= pokemon.img %>" alt="no picture">
+                      </button>
+                    </form>
+                  </div>
+                <% }); %>
+              <% } else { %>
+                <h2>No Pokémon found</h2>
+              <% } %>
+            </div>
+          </div>
+        <% } else { %> <!-- If move_data is empty, show this part -->
+          <h2>No moves found</h2>
+        <% } %>
       </div>
-    <% } else { %> <!-- If move_data is empty, show this part -->
-      <h2>No moves found</h2>
-    <% } %>
-  </div>
-  
+          
+</body>
+</html>

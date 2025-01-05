@@ -1,0 +1,38 @@
+<!-- input: results -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header>
+    <%- include('header', {}); %>
+  </header>
+  <div class="search-pokemon-container">
+    <div class="search-form">
+        <form action="/pokemon" method="GET">
+          <input type="text" name="query" placeholder="Search for a pokemon...">
+          <button type="submit">Search</button>
+        </form>
+    </div>
+    <div class="results-container">
+        <% if (results && results.length > 0) { %>
+            <% results.map(result => { %>
+                <form action="/pokemon/<%= result.id %>" method="GET">
+                    <button class="result-card" type="submit">
+                        <h3><%= result.name %></h3>
+                        <img src="<%= result.img %>" alt="<%= result.name %> picture">
+    
+                    </button>
+                </form>
+            <% }); %>
+        <% } %>
+    </div>
+  </div>
+  
+
+</body>
+</html>

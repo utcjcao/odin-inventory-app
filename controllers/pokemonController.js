@@ -3,36 +3,59 @@ const {
   updatePokemon,
   deletePokemon,
   postPokemonMove,
+  getMoveId,
 } = require("../db/queries");
 
 class pokemonController {
   constructor() {}
-  async pokemonPageGet(req, res) {
+
+  async pokemonPageGet(req, res, message = "") {
     const { pokemon_data, move_data } = await getPokemon(req.params.id);
     console.log(pokemon_data);
-    res.render("pokemon", { pokemon_data: pokemon_data, move_data });
+    res.render("pokemon", {
+      message: message,
+      pokemon_data: pokemon_data,
+      move_data: move_data,
+    });
   }
 
-  //   unused b/c this logic is encapsualted in addController
-  //   async pokemonPost(req, res) {
-  //     await postPokemon(req.body.name, req.body.img)
-  //   }
-
-  async pokemonUpdate(req, res) {
-    const id = req.body.id;
-    const name = req.body.name;
-    const img = req.body.img;
-    await updatePokemon(id, name, img);
-    res.render(`/pokemon/:${id}`); // re render the pokemon page
+  async getSearchPokemon(req, res) {
+    let name = req.query.query;
+    let results = [];
+    if (name) {
+      name = name.toLowerCase();
+      results = await getSearchPokemon(name);
+    }
+    console.log(results);
+    res.render("searchPokemon", { results: results });
   }
+
   async pokemonDelete(req, res) {
     console.log(req.params.id);
     res.render("index", { results: [] });
     await deletePokemon(req.params.id);
   }
+
   async pokemonMovePost(req, res) {
-    await postPokemonMove(req.body.pokemon, req.body.move);
-    const pokemonId = res.render(`/pokemon/:${req.body.id}`); // re render the pokemon page
+    const moveId = await getMoveId(req.body.move);
+    if (moveId === -1) {
+      const { pokemon_data, move_data } = await getPokemon(req.params.id);
+      console.log(pokemon_data);
+      res.render("pokemon", {
+        message: "no such move",
+        pokemon_data: pokemon_data,
+        move_data: move_data,
+      });
+    } else {
+      await postPokemonMove(req.params.id, moveId);
+      const { pokemon_data, move_data } = await getPokemon(req.params.id);
+      console.log(pokemon_data);
+      res.render("pokemon", {
+        message: "move added",
+        pokemon_data: pokemon_data,
+        move_data: move_data,
+      });
+    }
   }
 }
 
