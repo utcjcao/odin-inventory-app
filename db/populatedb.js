@@ -71,10 +71,13 @@ async function populatedb(data) {
     console.log("error: ", error);
   }
 }
-
-try {
-  const data = await fetchPokemonData();
-  populatedb(data);
-} catch (error) {
-  console.log("error;", error);
+async function main() {
+  try {
+    const data = await fetchPokemonData();
+    await populatedb(data);
+  } catch (error) {
+    console.log("error", error);
+  }
 }
+
+main();
