@@ -37,6 +37,7 @@ async function populatePokemonEntries(pokemonData) {
     for (let moveData of pokemonData[pokemonId].moves) {
       let moveIdResult = await pool.query(findMoveIdSql, [moveData.move.name]); // check if move is already present
       let moveId = moveIdResult.rows[0]?.id;
+
       if (!moveId) {
         await pool.query(insertMoveSql, [moveData.move.name]);
 
@@ -70,4 +71,4 @@ async function populatedb(data) {
   }
 }
 
-module.exports = { populatedb };
+populatedb();
