@@ -1,3 +1,4 @@
+const { fetchPokemonData } = require("../api/fetchPokemonData");
 const pool = require("./pool");
 
 const initTableSql = `
@@ -71,4 +72,5 @@ async function populatedb(data) {
   }
 }
 
-populatedb();
+const data = await fetchPokemonData();
+populatedb(data);
