@@ -1,11 +1,11 @@
 // need to add a post, delete, update function for pokemon
 const {
-  pokemonToMovePost,
+  addMoveToPokemonPost,
   pokemonMoveDelete,
 } = require("../controllers/pokemonController");
 
 const {
-  moveToPokemonPost,
+  addPokemonToMovePost,
   movePokemonDelete,
 } = require("../controllers/moveController");
 
@@ -13,19 +13,31 @@ const { Router } = require("express");
 
 const pokemonMoveRouter = Router();
 
-// add new pokemon from move page
-pokemonMoveRouter.post("/moveToPokemon/:moveId", async (req, res) => {
-  await pokemonToMovePost(req, res);
+// @ move page, add pokemon (id is move id)
+pokemonMoveRouter.post("/addPokemonToMove/:id", async (req, res) => {
+  console.log("adding move to pokemon");
+  await addPokemonToMovePost(req, res);
 });
 
-// add new move from pokemon page
-pokemonMoveRouter.post("/pokemonToMove/:pokemonId", async (req, res) => {
-  await moveToPokemonPost(req, res);
+// @ pokemon page, add move (id is pokemon id)
+pokemonMoveRouter.post("/addMoveToPokemon/:id", async (req, res) => {
+  console.log("adding pokemon to move");
+  await addMoveToPokemonPost(req, res);
 });
 
 // delete pokemon move relationship
-pokemonMoveRouter.post("/delete/:pokemonId/:moveId", async (req, res) => {
-  await pokemonMoveDelete(req, res);
-});
+pokemonMoveRouter.post(
+  "/deleteMoveFromPokemon/:pokemonId/:moveId",
+  async (req, res) => {
+    await pokemonMoveDelete(req, res);
+  }
+);
+
+pokemonMoveRouter.post(
+  "/deletePokemonFromMove/:pokemonId/:moveId",
+  async (req, res) => {
+    await movePokemonDelete(req, res);
+  }
+);
 
 module.exports = { pokemonMoveRouter };

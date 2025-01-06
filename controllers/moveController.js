@@ -3,14 +3,16 @@ const {
   deleteMove,
   getSearchMove,
   getPokemonId,
+  postPokemonMove,
+  deletePokemonMove,
+  getPokemon,
 } = require("../db/queries");
 
 class moveController {
   constructor() {}
-  async movePageGet(req, res) {
+  async movePageGet(req, res, message = "") {
     const { move_data, pokemon_data } = await getMove(req.params.id);
-    console.log(move_data);
-    res.render("move", { move_data, pokemon_data });
+    res.render("move", { move_data, pokemon_data, message });
   }
   async moveDelete(req, res) {
     console.log(req.params.id);
@@ -29,30 +31,26 @@ class moveController {
   };
 
   // from move page, verify pokemon and add
-  async moveToPokemonPost(req, res) {
+  async addPokemonToMovePost(req, res) {
     const pokemonId = await getPokemonId(req.body.pokemon);
     if (pokemonId === -1) {
-      const { pokemon_data, move_data } = await getMove(req.params.moveId);
+      const { move_data, pokemon_data } = await getMove(req.params.id);
       res.render("move", {
-        message: "pokemon not found",
         move_data,
         pokemon_data,
+        message: "no pokemon found",
       });
     } else {
-      await postPokemonMove(pokemonId, req.params.moveId);
-      const { pokemon_data, move_data } = await getMove(req.params.id);
-      console.log(pokemon_data);
-      res.render("move", {
-        message: "pokemon added",
-        pokemon_data: pokemon_data,
-        move_data: move_data,
-      });
+      await postPokemonMove(pokemonId, req.params.id);
+
+      const { move_data, pokemon_data } = await getMove(req.params.id);
+      res.render("move", { move_data, pokemon_data, message: "pokemon added" });
     }
   }
 
   async movePokemonDelete(req, res) {
     await deletePokemonMove(req.params.pokemonId, req.params.moveId);
-    const { pokemon_data, move_data } = await getPokemon(req.params.pokemonId);
+    const { pokemon_data, move_data } = await getMove(req.params.moveId);
     console.log(pokemon_data);
     res.render("move", {
       message: `pokemon deleted`,

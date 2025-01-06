@@ -50,12 +50,37 @@ button:hover {
     padding-right: 20px;
 }
 
-.result-card, .pokemon-card, .move-card {
+.result-card, .move-card {
     display: flex;
     flex-direction: row;
     justify-items: stretch;
     align-items: stretch;
     background-color: white;
+}
+
+.pokemon-card {
+    display: flex;
+    flex-direction: column;
+    justify-items: stretch;
+
+    align-items: stretch;
+    background-color: white;
+}
+
+.pokemon-container-info, .move-container-info {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.pokemon-card-delete-button-container {
+    display: flex;
+    justify-content: center;
+}
+
+.pokemon-card-delete-button {
+    width: 80px;
+    border-radius: 0px;
 }
 
 body {

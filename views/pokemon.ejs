@@ -16,7 +16,7 @@
             <div class="pokemon-container-content">
               <div class="container-header">
                   <h1><%= pokemon_data[0].name %></h1>
-                  <form action="/pokemonmove/moveToPokemon/<%= pokemon_data[0].id%>" method="POST">
+                  <form action="/pokemonmove/addMoveToPokemon/<%= pokemon_data[0].id%>" method="POST">
                     <input style="height: 45px;" type="text" name="move" placeholder="enter new move here...">
                     <button type="submit"><h3>Add Move</h3></button>
                   </form>
@@ -35,7 +35,7 @@
                     <form action="/move/<%= move.id %>" method="GET">
                       <button type="submit"><%= move.name %></button>
                     </form>
-                    <form action="/pokemonmove/delete/<%= pokemon_data[0].id %>/<%= move.id %>" method="POST">
+                    <form action="/pokemonmove/deleteMoveFromPokemon/<%= pokemon_data[0].id %>/<%= move.id %>" method="POST">
                       <button type="submit">x</button>
                     </form>
                   </div>

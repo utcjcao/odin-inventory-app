@@ -17,10 +17,11 @@
             <div class="move-container-content">
                 <div class="container-header">
                     <h1><%= move_data.name %></h1>
-                    <form action="/pokemonmove/pokemonToMove/<%= move_data.id%>" method="POST">
+                    <form action="/pokemonmove/addPokemonToMove/<%= move_data.id%>" method="POST">
                       <input style="height: 45px;" type="text" name="pokemon" placeholder="enter new pokemon here...">
                       <button type="submit"><h3>Add pokemon</h3></button>
                     </form>
+                    <div><%= message %></div>
                     <form action="/move/delete/<%= move_data.id %>" method="POST">
                         <button type="submit"><h3>Delete Move</h3></button>
                     </form>
@@ -35,6 +36,9 @@
                         <h3><%= pokemon.name %></h3>
                         <img src="<%= pokemon.img %>" alt="no picture">
                       </button>
+                    </form>
+                    <form class="pokemon-card-delete-button-container" action="/pokemonmove/deletePokemonFromMove/<%= pokemon.id %>/<%= move_data.id %>" method="POST">
+                      <button class="pokemon-card-delete-button" type="submit">x</button>
                     </form>
                   </div>
                 <% }); %>

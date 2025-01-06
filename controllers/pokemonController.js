@@ -12,7 +12,6 @@ class pokemonController {
   constructor() {}
   async pokemonPageGet(req, res, message = "") {
     const { pokemon_data, move_data } = await getPokemon(req.params.id);
-    console.log(pokemon_data);
     res.render("pokemon", {
       message: message,
       pokemon_data: pokemon_data,
@@ -38,24 +37,18 @@ class pokemonController {
   }
 
   // from pokemon page, verify move and add
-  async pokemonToMovePost(req, res) {
+  async addMoveToPokemonPost(req, res) {
     const moveId = await getMoveId(req.body.move);
     if (moveId === -1) {
-      const { pokemon_data, move_data } = await getPokemon(
-        req.params.pokemonId
-      );
-      console.log(pokemon_data);
+      const { pokemon_data, move_data } = await getPokemon(req.params.id);
       res.render("pokemon", {
         message: "no such move in database",
         pokemon_data: pokemon_data,
         move_data: move_data,
       });
     } else {
-      await postPokemonMove(req.params.pokemonId, moveId);
-      const { pokemon_data, move_data } = await getPokemon(
-        req.params.pokemonId
-      );
-      console.log(pokemon_data);
+      await postPokemonMove(req.params.id, moveId);
+      const { pokemon_data, move_data } = await getPokemon(req.params.id);
       res.render("pokemon", {
         message: "move added",
         pokemon_data: pokemon_data,
