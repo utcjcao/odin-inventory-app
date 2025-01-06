@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "jest",
-    "start": "node db/populatedb.js && node app.js"
+    "start": "node app.js",
+    "populate": "node db/populatedb.js"
   },
   "keywords": [],
   "author": "",

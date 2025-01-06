@@ -74,6 +74,7 @@ async function populatedb(data) {
 async function main() {
   try {
     const data = await fetchPokemonData();
+    console.log("data fetched");
     await populatedb(data);
   } catch (error) {
     console.log("error", error);
