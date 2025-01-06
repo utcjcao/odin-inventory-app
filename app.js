@@ -7,6 +7,7 @@ const { moveRouter } = require("./routers/moveRouter");
 const { addRouter } = require("./routers/addRouter");
 const { indexRouter } = require("./routers/indexRouter");
 const { pokemonMoveRouter } = require("./routers/pokemonMoveRouter");
+const { main } = require("./db/populatedb");
 
 const app = new express();
 
@@ -22,7 +23,6 @@ app.use(methodOverride("_method"));
 app.use("/add", addRouter);
 app.use("/move", moveRouter);
 app.use("/pokemonmove", pokemonMoveRouter);
-
 app.use("/pokemon", pokemonRouter);
 app.use("/", indexRouter);
 
@@ -35,6 +35,8 @@ app.use("/", indexRouter);
 // should also have optoin to a) delete move data, b) edit move data, c) add or delete related pokemon
 
 // add page GET, POST "/add" submit page, where user enters name, img url, and can select moves to connect to pokemon
+
+main();
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
