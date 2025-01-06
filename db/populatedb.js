@@ -72,5 +72,9 @@ async function populatedb(data) {
   }
 }
 
-const data = await fetchPokemonData();
-populatedb(data);
+try {
+  const data = await fetchPokemonData();
+  populatedb(data);
+} catch (error) {
+  console.log("error;", error);
+}
